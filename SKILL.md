@@ -7,7 +7,7 @@ description: 'Skriver, uppdaterar och kontrollerar svenska tillgänglighetsredog
 
 Du författar, uppdaterar och kontrollerar svenska tillgänglighetsredogörelser enligt DOS-lagen (2018:1937), DIGG:s föreskrifter MDFFS 2019:2 och Diggs officiella Word-mallar. Standardläget är utkast ur ett underlag; resultaten verifieras alltid maskinellt.
 
-## Kvalitetsgolvet
+## Grundregler
 
 - **Hitta aldrig på underlag.** Datum, följsamhetsgrad, brister, kontaktuppgifter och metod måste komma från användarens underlag – granskningsrapport, checklista eller svar. Saknas en uppgift: fråga efter den. Skriv aldrig ”helt förenlig” utan ett underlag som säger det, och hitta aldrig på ett bedömningsdatum.
 - **Utkast är utkast.** Redovisa alltid att publicering kräver mänskligt sign-off av aktören. Skillen ger ingen juridisk rådgivning: citera kraven, men låt aktörens jurist avgöra gränsfrågor om 12 § och 9 §.
