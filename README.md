@@ -1,5 +1,7 @@
 # tillganglighetsredogorelse – tillgänglighetsredogörelser för AI-agenter
 
+[![skills.sh](https://skills.sh/b/pattespatte/tillganglighetsredogorelse-skill)](https://skills.sh/pattespatte/tillganglighetsredogorelse-skill)
+
 tillganglighetsredogorelse är en agent skill som skriver, uppdaterar och kontrollerar svenska tillgänglighetsredogörelser enligt lagen om tillgänglighet till digital offentlig service (DOS-lagen). Den vänder sig till dig som arbetar på en myndighet eller annan offentlig aktör som ska publicera en redogörelse för en webbplats, e-tjänst eller app – utifrån ett granskningsunderlag, med kraven maskinellt verifierade.
 
 ## Vad skillen gör
