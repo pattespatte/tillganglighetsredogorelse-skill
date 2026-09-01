@@ -10,11 +10,11 @@ tillganglighetsredogorelse är en agent skill som skriver, uppdaterar och kontro
 |---|---|
 | Utkast | En färdig redogörelse enligt Diggs mall, från ditt underlag eller en granskningsrapport |
 | Uppdatera | Befintlig redogörelse uppdaterad – nya brister, nya datum, ändrad följsamhet |
-| Kontrollera | Kravkontroll av en färdig redogörelse: vad som saknas, bryter mot eller luktar illa |
+| Kontrollera | Kravkontroll av en färdig redogörelse: vad som saknas eller kan göra bättre |
 
 Tre saker skiljer tillganglighetsredogorelse från en vanlig prompt:
 
-1. **Kraven kontrolleras maskinellt.** Efter varje utkast kör ett skript en syntaktisk kontroll mot MDFFS 2019:2 §6 och Diggs vägledning: obligatoriska rubriker, följsamhetsgrad med exakt ord (helt, delvis eller inte), datumformat och datumordning, formulärlänk, anmälningslänk till Digg, inga kvarvarande platshållare. En redogörelse som inte klarar kontrollen lämns inte ut.
+1. **Kraven kontrolleras maskinellt.** Efter varje utkast kör ett skript en syntaktisk kontroll mot MDFFS 2019:2 §6 och Diggs vägledning: obligatoriska rubriker, följsamhetsgrad med exakt ord (helt, delvis eller inte), datumformat och datumordning, formulärlänk, anmälningslänk till Digg, inga kvarvarande platshållare. En redogörelse som inte klarar kontrollen godkänns inte.
 2. **Svenskt regelverk, svensk mall.** Strukturen följer Diggs officiella Word-mallar för webbplats och app – rubriklydelse, avsnittsordning, de tre bristkategorierna (bristande förenlighet, oskäligt betungande anpassning 12 §, innehåll utanför lagen 9 §) och Diggs tio användningssituationer. Kraven är spårbara till lag, föreskrift och vägledning i `references/krav-och-kallor.md`.
 3. **Skillen testar inte tillgänglighet.** Granskningsunderlaget – automatiska verktyg, manuell testning, konsult – är inmatning, inte något skillen alstrar. Därmed hittar den inte på fakta: datum, brister och följsamhetsgrad kommer alltid från ditt underlag, och utkastet kräver mänskligt sign-off före publicering.
 
