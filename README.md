@@ -10,7 +10,7 @@ tillganglighetsredogorelse är en agent skill som skriver, uppdaterar och kontro
 |---|---|
 | Utkast | En färdig redogörelse enligt Diggs mall, från ditt underlag eller en granskningsrapport |
 | Uppdatera | Befintlig redogörelse uppdaterad – nya brister, nya datum, ändrad följsamhet |
-| Kontrollera | Kravkontroll av en färdig redogörelse: vad som saknas eller kan göra bättre |
+| Kontrollera | Kontroll av en färdig redogörelse: vad som saknas eller kan göras mer tillgängligt |
 
 Tre saker skiljer tillganglighetsredogorelse från en vanlig prompt:
 
