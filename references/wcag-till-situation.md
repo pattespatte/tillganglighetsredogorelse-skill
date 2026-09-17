@@ -1,6 +1,6 @@
 # WCAG-kriterier till användningssituationer
 
-Referens för läget utkast: översätt tekniska granskningsfynd (WCAG eller EN 301 549) till användarvänliga bristpunkter, sorterade per användningssituation. Mappningen är vägledande – bedöm alltid fyndet i sitt sammanhang. Ett fynd kan höra hemma i flera situationer; välj de som beskriver vilka användare som påverkas.
+Referens för läget utkast, enligt båda lagarna: översätt tekniska granskningsfynd (WCAG eller EN 301 549) till användarvänliga bristpunkter, sorterade per användningssituation. Mappningen är vägledande – bedöm alltid fyndet i sitt sammanhang. Ett fynd kan höra hemma i flera situationer; välj de som beskriver vilka användare som påverkas. Enligt DOS-lagen är EN 301 549 det tekniska kravet; enligt tillgänglighetslagen (2023:254) är standarden den rekommenderade ledningen – samma kriterier används i båda mallarna.
 
 Så skrivs en bristpunkt: **vad** som inte fungerar, **var** det finns (sida, vy eller funktion), **hur** det påverkar användaren, och kriteriumnumret inom parentes. Teknisk detalj hör hemma i granskningsrapporten – i redogörelsen räcker kriteriumhänvisningen.
 

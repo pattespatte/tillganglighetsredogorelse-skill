@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""Kontrollera att en tillgänglighetsredogörelse uppfyller lagkrav och mallens regler.
+"""Kontrollera att ett tillgänglighetsdokument uppfyller lagkrav och mallens regler.
 
 Används av skillen tillganglighetsredogorelse i läget kontrollera (och efter
 utkast/uppdatering):
 
-    python3 kontrollera.py REDOGÖRELSE.md [--app]
+    python3 kontrollera.py REDOGÖRELSE.md [--app] [--lptt]
 
-Grunden är MDFFS 2019:2 §6 och Diggs vägledning och Word-mallar. Kontrollerna
-är syntaktiska – de konstaterar att obligatoriska delar finns och att mallens
-platshållare är utbytta, inte att innehållet är sant.
+Två lägen: DOS-lagen (standard, samt --app för mobilapplikationer) med grund i
+MDFFS 2019:2 §6 och Diggs vägledning och Word-mallar, och tillgänglighetslagen
+(2023:254) med --lptt och grund i 25 § lagen, 24 § förordningen (2023:676) och
+PTS vägledning. Kontrollerna är syntaktiska – de konstaterar att obligatoriska
+delar finns och att mallens platshållare är utbytta, inte att innehållet är sant.
 
 Varje kontroll rapporteras som OK, FEL eller VARNING. FEL ger exit 1 och raden
 "BRISTER", VARNING påverkar inte exit-koden. Utdata är kompakt: en rad per
@@ -38,6 +40,35 @@ OBLIGATORISKA_RUBRIKER = [
     "Teknisk information om",
     "Innehåll som inte är tillgängligt",
     "Hur vi testat",
+]
+
+# LPTT-läget: mallens instruktionsfraser som ska vara borta i en färdig information.
+LPTT_KVARLEVOR = [
+    "VILLKORLIGT", "ÅÅÅÅ",
+    "[Om tjänsten följer standarden:", "[Om tjänsten inte följer standarden:",
+    "[Om inga kända brister:", "[Om kända brister:",
+    "[Inga kända brister:", "[Kvar endast om", "[Annars:",
+    "[Om du upptäcker", "[ring ", "[använd vårt", "[Vi arbetar",
+    "[Om tjänsten även finns som app", "[För tjänster under PTS",
+]
+
+# LPTT-läget: obligatoriska H2-fragment enligt references/mall-lptt.md.
+LPTT_OBLIGATORISKA_RUBRIKER = [
+    "Om tjänsten",
+    "Hur tillgänglig är",
+    "som kan vara svåra att använda",
+    "Hur vi kontrollerar",
+    "Kontakta oss",
+    "Tillsyn",
+]
+
+# Tillsynsmyndigheter enligt förordningen (2023:676).
+TILLSYNSMYNDIGHETER = [
+    "PTS", "Post- och telestyrelsen",
+    "Mediemyndigheten",
+    "Konsumentverket",
+    "Transportstyrelsen",
+    "Myndigheten för tillgängliga medier",
 ]
 
 DATUM = r"\d{4}-\d{2}-\d{2}"
@@ -82,12 +113,134 @@ def listpunkter(text):
     return [rad[2:].strip() for rad in text.splitlines() if rad.lstrip().startswith("- ")]
 
 
+def kontrollera_lptt(text, rader, rub, namn):
+    """Läge för lagen (2023:254): information om tjänstens tillgänglighet."""
+    fel, varningar, rapport = 0, 0, []
+
+    def ok(meddelande):
+        rapport.append(f"  [OK]      {meddelande}")
+
+    def fel_rad(meddelande):
+        nonlocal fel
+        fel += 1
+        rapport.append(f"  [FEL]     {meddelande}")
+
+    def varning(meddelande):
+        nonlocal varningar
+        varningar += 1
+        rapport.append(f"  [VARNING] {meddelande}")
+
+    print(f"Kontroll av {namn} (tjänst, 2023:254):")
+
+    # 1. Kvarvarande platshållare och mallinstruktioner
+    fynd = [k for k in LPTT_KVARLEVOR if k in text]
+    fynd += re.findall(r"\{[^{}\n]{1,120}\}", text)
+    fynd += [m for m in re.findall(r"<[^<>\n]{1,120}>", text)
+             if re.search(r"ÅÅÅÅ|länk|formulär|dag|månad|år|telefonnummer", m, re.I)]
+    if fynd:
+        fel_rad(f"Platshållare kvar: {', '.join(dict.fromkeys(fynd[:6]))}"
+                + (" m.m." if len(fynd) > 6 else ""))
+    else:
+        ok("Inga platshållare kvar")
+
+    # 2. Rubriker
+    h1 = [r for r in rub if r.niva == 1]
+    if not h1:
+        fel_rad("H1-rubrik saknas")
+    saknade = [f for f in LPTT_OBLIGATORISKA_RUBRIKER if hitta(rub, f, rader, max_niva=2) is None]
+    if saknade:
+        fel_rad(f"Obligatoriska rubriker saknas: {', '.join(saknade)}")
+    else:
+        ok("Alla obligatoriska rubriker finns")
+
+    # 3. Bristförteckningen och dess användningssituationer
+    situationsrubriker = [r for r in rub
+                          if r.niva == 3 and r.titel.lower().startswith("problem vid")]
+    if situationsrubriker:
+        tomma = [r.titel for r in situationsrubriker if not listpunkter(r.text(rader))]
+        if tomma:
+            fel_rad(f"Användningssituationer utan bristpunkter: {', '.join(tomma)}")
+        else:
+            punkter = [p for r in situationsrubriker for p in listpunkter(r.text(rader))]
+            utan = [p for p in punkter if not KRITERIUM.search(p)]
+            ok(f"Bristförteckning: {len(situationsrubriker)} situationer, {len(punkter)} punkter")
+            if utan:
+                varning(f"{len(utan)} bristpunkt" + ("" if len(utan) == 1 else "er")
+                        + " utan hänvisning till WCAG/EN 301 549-kriterium")
+    elif re.search(r"känner inte till", text, re.I):
+        ok("Inga kända brister (meningen ”känner inte till” finns)")
+    else:
+        fel_rad("Varken användningssituationer (”Problem vid användning …”) eller mening om inga kända brister finns")
+
+    # 4. 7 §-undantaget: vilka krav och motivering (VILLKORLIGT avsnitt)
+    undantag = hitta(rub, "Undantag", rader, max_niva=2)
+    if undantag is not None:
+        avsnitt = undantag.text(rader)
+        if not listpunkter(avsnitt):
+            fel_rad("7 §-avsnittet saknar förteckning över vilka krav undantaget gäller")
+        elif "Motivering" not in avsnitt:
+            fel_rad("7 §-avsnittet saknar motivering (raden ”Motivering: …”)")
+        else:
+            ok("7 §-avsnitt med kravförteckning och motivering")
+
+    # 5. Kontaktavsnittet (minst en väg – e-post är den som går att se maskinellt)
+    kontakt = hitta(rub, "Kontakta oss", rader)
+    if kontakt is not None and not re.search(EPOST, kontakt.text(rader)):
+        varning("Ingen e-postadress i kontaktavsnittet – kontrollera att minst en kontaktväg finns")
+
+    # 6. Tillsynsavsnittet: rätt myndighet varierar, bara en påminnelse
+    tillsyn = hitta(rub, "Tillsyn", rader, max_niva=2)
+    if tillsyn is not None:
+        avsnitt = tillsyn.text(rader)
+        if not any(m.lower() in avsnitt.lower() for m in TILLSYNSMYNDIGHETER):
+            varning("Tillsynsavsnittet nämner ingen känd tillsynsmyndighet "
+                    "(PTS, Mediemyndigheten, Konsumentverket, Transportstyrelsen, "
+                    "Myndigheten för tillgängliga medier) – kontrollera vilken som gäller tjänsteområdet")
+        else:
+            ok("Tillsynsavsnitt med myndighet")
+
+    # 7. Datum: god praxis enligt PTS vägledning, inte lagkrav
+    def datum_efter(markare):
+        for rad in rader:
+            if markare in rad:
+                m = re.search(DATUM, rad)
+                return m.group(0) if m else f"OGILTIG ({rad.strip()[:60]})"
+        return None
+
+    kontroll = datum_efter("Senaste kontrollen gjordes den")
+    uppdaterad = datum_efter("Informationen uppdaterades senast den")
+    if kontroll is None:
+        varning("Datum för senaste kontroll saknas (”Senaste kontrollen gjordes den …”) – god praxis, inte krav")
+    elif not re.fullmatch(DATUM, kontroll):
+        fel_rad(f"Kontrolldatum inte i ÅÅÅÅ-MM-DD: {kontroll}")
+    else:
+        ok(f"Senaste kontroll: {kontroll}")
+    if uppdaterad is None:
+        varning("Senast uppdaterad saknas (”Informationen uppdaterades senast den …”) – god praxis, inte krav")
+    elif not re.fullmatch(DATUM, uppdaterad):
+        fel_rad(f"Senast uppdaterad inte i ÅÅÅÅ-MM-DD: {uppdaterad}")
+    elif kontroll and re.fullmatch(DATUM, kontroll) and kontroll > uppdaterad:
+        fel_rad(f"Kontrolldatum ({kontroll}) ligger efter senast uppdaterad ({uppdaterad})")
+    else:
+        ok(f"Senast uppdaterad: {uppdaterad}")
+
+    print("\n".join(rapport))
+    varningstext = f"{varningar} varning" + ("ar" if varningar != 1 else "")
+    if fel:
+        print(f"BRISTER – {fel} fel, {varningstext}; rätta och kör igen")
+        return 1
+    print(f"KLAR – 0 fel, {varningstext}")
+    return 0
+
+
 def main():
     argv = sys.argv[1:]
     app = "--app" in argv
-    fil = [a for a in argv if a != "--app"]
-    if len(fil) != 1:
-        print("Användning: kontrollera.py REDOGÖRELSE.md [--app]", file=sys.stderr)
+    lptt = "--lptt" in argv
+    flaggor = [a for a in argv if a.startswith("--")]
+    fil = [a for a in argv if not a.startswith("--")]
+    if len(fil) != 1 or any(f not in ("--app", "--lptt") for f in flaggor) or (app and lptt):
+        print("Användning: kontrollera.py REDOGÖRELSE.md [--app] [--lptt]", file=sys.stderr)
         return 2
 
     try:
@@ -98,6 +251,8 @@ def main():
 
     rader = text.splitlines()
     rub = rubriker(rader)
+    if lptt:
+        return kontrollera_lptt(text, rader, rub, fil[0])
     fel, varningar, rapport = 0, 0, []
 
     def ok(meddelande):
