@@ -1,6 +1,6 @@
 ---
 name: tillganglighetsredogorelse
-description: 'Skriver, uppdaterar och kontrollerar svenska tillgänglighetsredogörelser enligt DOS-lagen (2018:1937) med Diggs officiella mallar, samt information om tjänstens tillgänglighet enligt lagen (2023:254) om vissa produkters och tjänsters tillgänglighet (tillgänglighetslagen) med PTS vägledning som struktur – båda med EN 301 549/WCAG som teknisk grund och en maskinell kravkontroll som verifierar resultatet. Skillen författar dokumentet utifrån ett granskningsunderlag; den utför inte själva tillgänglighetstestningen. Används när en offentlig aktör behöver en tillgänglighetsredogörelse för en webbplats, e-tjänst eller app, eller när en leverantör av konsumenttjänster – e-handel, banktjänster, elektronisk kommunikation, passagerartransport, e-böcker eller tv-tjänster – behöver tillgänglighetsinformation. Triggas på "tillgänglighetsredogörelse", "DOS-lagen", "tillgänglighetslagen", "LPTT", "2023:254", "EN 301 549", "redogörelse", "följsamhetsgrad", "oskäligt betungande anpassning", "oproportionerligt stor börda", "användningssituationer", "tillgänglighetsredogörelse för app", "tillgänglighetsinformation".'
+description: 'Skriver, uppdaterar och kontrollerar svenska tillgänglighetsredogörelser enligt DOS-lagen (2018:1937) med Diggs officiella mallar, samt information om tjänstens tillgänglighet enligt tillgänglighetslagen (2023:254) med PTS vägledning – båda med EN 301 549/WCAG som teknisk grund och maskinell kravkontroll. Skillen författar utifrån ett granskningsunderlag; den utför inte själva tillgänglighetstestningen. Används när en offentlig aktör behöver en tillgänglighetsredogörelse för en webbplats, e-tjänst eller app, eller när en leverantör av konsumenttjänster – e-handel, banktjänster, elektronisk kommunikation, passagerartransport, e-böcker eller tv-tjänster – behöver tillgänglighetsinformation. Triggas på tillgänglighetsredogörelse, DOS-lagen, tillgänglighetslagen, LPTT, 2023:254, EN 301 549, följsamhetsgrad, oskäligt betungande anpassning, oproportionerligt stor börda, användningssituationer, tillgänglighetsinformation.'
 ---
 
 # Tillgänglighetsredogörelse och tillgänglighetsinformation – utkast, uppdatering och kontroll
@@ -76,7 +76,7 @@ Tempo: två Read (underlag + mall), ett Write, ett Bash – sedan svaret. Läs r
 
 ## Tonläge
 
-Klarspråk genomgående: korta meningar, vanliga ord, du-tilltal till användaren, vi om aktören. Bristpunkterna beskriver vad användaren inte kan göra – inte vilken teknik som febrar. Facktermerna som måste vara kvar (följsamhet, EN 301 549) förklaras vid första användningen.
+Klarspråk genomgående: korta meningar, vanliga ord, du-tilltal till användaren, vi om aktören. Bristpunkterna beskriver vad användaren inte kan göra – inte vilken teknik som är problemet. Facktermerna som måste vara kvar (följsamhet, EN 301 549) förklaras vid första användningen.
 
 ## Källor
 
